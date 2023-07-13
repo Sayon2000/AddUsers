@@ -29,7 +29,7 @@ function handleSubmit(e){
     let div = document.createElement('div')
 
     let edit = document.createElement('button')
-    // edit.className = 'btn btn-primary btn-sm mx-2'
+    edit.className = 'edit'
     edit.textContent = "edit"
     div.appendChild(edit)
     let deleteBtn = document.createElement('button')
@@ -55,7 +55,7 @@ function renderElements(){
         let div = document.createElement('div')
 
         let edit = document.createElement('button')
-        // edit.className = 'btn btn-primary btn-sm mx-2'
+        edit.className = 'edit'
         edit.textContent = "edit"
         div.appendChild(edit)
         let deleteBtn = document.createElement('button')
@@ -85,5 +85,23 @@ dl.addEventListener('click', (e)=>{
         }
 
 
+    }
+
+    if(e.target.classList.contains('edit')){
+        let elem = e.target.parentNode.parentNode
+        let index = elem.textContent[0] -1
+        const users =JSON.parse(localStorage.getItem('users'))
+        let ul = document.getElementById('users')
+        document.getElementById('name').value = users[index].name
+        document.getElementById('email').value = users[index].email
+        if(users.length === 1 && index === 0){
+            localStorage.removeItem('users')
+            ul.removeChild(e.target.parentNode.parentNode)
+        }
+        else{
+            users.splice(index ,1)
+            localStorage.setItem('users' , JSON.stringify(users))
+            renderElements()
+        }
     }
 })
