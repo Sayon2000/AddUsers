@@ -14,5 +14,7 @@ function handleSubmit(e){
 
     arr.push(data)
     localStorage.setItem('users' ,JSON.stringify( arr));
+    e.target.name.value =""
+    e.target.email.value =""
 
 }
