@@ -1,5 +1,5 @@
 const axiosInstance = axios.create({
-    baseURL : 'https://crudcrud.com/api/a0f3aed0c5504f99aecd24b9891cf70c/appointment'
+    baseURL : 'https://crudcrud.com/api/4f1e2c6cc40b4f1a8439a5d4eaa053dc/appointment'
 })
 
 let form = document.getElementById('my-form')
@@ -12,17 +12,25 @@ window.addEventListener('load' ,()=>{
 
 async function handleSubmit(e){
     e.preventDefault()
-    let arr = []
-    if(localStorage.getItem('users') !== null)
-        arr = JSON.parse(localStorage.getItem('users') )
-    
+
+    try{
     const data = {name : e.target.name.value , 
                 email : e.target.email.value,
                 phone : e.target.phone.value
         }
 
         console.log(JSON.stringify(data))
-    let res = await axiosInstance.post('/',data)
+  let res;
+  let id = document.querySelector('input[type="submit"]').id;
+        if(id){
+            res = await axiosInstance.put(`/${id}`,data)
+            document.querySelector('input[type="submit"]').id =''
+    }else{
+
+    
+    res = await axiosInstance.post('/',data)
+    id = res.data._id
+    }
     console.log(res)
 
     e.target.name.value =""
@@ -40,20 +48,26 @@ async function handleSubmit(e){
     let edit = document.createElement('button')
     edit.className = 'edit'
     edit.textContent = "edit"
-    edit.id = res.data._id
+    edit.id = id
     div.appendChild(edit)
     let deleteBtn = document.createElement('button')
     deleteBtn.className = 'delete'
     deleteBtn.textContent ='delete'
-    deleteBtn.id = res.data._id
+    deleteBtn.id = id
     div.appendChild(deleteBtn)
     li.appendChild(div)
     ul.appendChild(li)
+}catch(e){
+    console.log(e)
+}
 }
 {/* <div class="float-right">
             <button type="button" class="btn btn-primary btn-sm mx-2">edit</button><button class="btn btn-danger btn-sm delete">X</button>
           </div> */}
 async function renderElements(){
+    try{
+
+    
     const users = await axiosInstance.get()
     console.log(users) 
     let ul = document.getElementById('users')
@@ -80,6 +94,10 @@ async function renderElements(){
         li.appendChild(div)
         ul.appendChild(li)
     });
+}catch(e){
+    console.log(e)
+}
+
 }
 
 var dl = document.getElementById('users')
@@ -94,26 +112,23 @@ dl.addEventListener('click',async (e)=>{
         let ul = document.getElementById('users')
 
         ul.removeChild(e.target.parentNode.parentNode)
-        }
-
     }
+    
+}
 
-    if(e.target.classList.contains('edit')){
-        let elem = e.target.parentNode.parentNode
-        let index = elem.textContent[0] -1
-        const users =JSON.parse(localStorage.getItem('users'))
-        let ul = document.getElementById('users')
-        document.getElementById('name').value = users[index].name
-        document.getElementById('email').value = users[index].email
-        document.getElementById('phone').value = users[index].phone
-        if(users.length === 1 && index === 0){
-            localStorage.removeItem('users')
-            ul.removeChild(e.target.parentNode.parentNode)
-        }
-        else{
-            users.splice(index ,1)
-            localStorage.setItem('users' , JSON.stringify(users))
-            renderElements()
-        }
-    }
+if(e.target.classList.contains('edit')){
+    let elem = e.target.parentNode.parentNode
+    let ul = document.getElementById('users')
+    let str = elem.textContent
+    console.log(str)
+    console.log(elem)
+    document.getElementById('name').value = str.substring(7,str.indexOf('Email')-1)
+    document.getElementById('email').value = str.substring(str.indexOf('Email') + 8,str.indexOf('phone number')-1)
+    document.getElementById('phone').value = str.substring(str.indexOf('phone number')+15,str.lastIndexOf('edit'))
+    console.log(e.target.id)
+    document.querySelector('input[type="submit"]').id = e.target.id
+    ul.removeChild(e.target.parentNode.parentNode)
+    
+    
+}
 })
