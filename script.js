@@ -83,22 +83,18 @@ async function renderElements(){
 }
 
 var dl = document.getElementById('users')
-dl.addEventListener('click', (e)=>{
+dl.addEventListener('click',async (e)=>{
     if(e.target.classList.contains('delete')){
-        let index = e.target.parentNode.parentNode.textContent[0] -1
-        const users =JSON.parse(localStorage.getItem('users'))
+        let id = e.target.id
+        let res = await axiosInstance.delete(`/${id}`)
+        
+        if(res.status === 200){
+
+        
         let ul = document.getElementById('users')
 
-        if(users.length === 1 && index === 0){
-            localStorage.removeItem('users')
-            ul.removeChild(e.target.parentNode.parentNode)
+        ul.removeChild(e.target.parentNode.parentNode)
         }
-        else{
-            users.splice(index ,1)
-            localStorage.setItem('users' , JSON.stringify(users))
-            renderElements()
-        }
-
 
     }
 
