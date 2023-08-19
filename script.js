@@ -1,7 +1,7 @@
 const axiosInstance = axios.create({
-    baseURL : 'https://crudcrud.com/api/4f1e2c6cc40b4f1a8439a5d4eaa053dc/appointment'
+    baseURL : 'https://crudcrud.com/api/49ab1f123b2e4d8888959f02d0cfc4c4/appointment'
 })
-
+var curr = null;
 let form = document.getElementById('my-form')
 
 form.addEventListener('submit' , handleSubmit)
@@ -23,14 +23,17 @@ async function handleSubmit(e){
   let res;
   let id = document.querySelector('input[type="submit"]').id;
         if(id){
+
             res = await axiosInstance.put(`/${id}`,data)
-            document.querySelector('input[type="submit"]').id =''
+
+
     }else{
 
     
     res = await axiosInstance.post('/',data)
     id = res.data._id
     }
+    let elem = document.querySelector('input[type="submit"]').dataset.elem
     console.log(res)
 
     e.target.name.value =""
@@ -56,7 +59,20 @@ async function handleSubmit(e){
     deleteBtn.id = id
     div.appendChild(deleteBtn)
     li.appendChild(div)
+
+if(curr !== null){
+    ul.insertBefore(li,curr)
+    document.querySelector('input[type="submit"]').id =''
+    curr = null
+            
+
+}
+else{
+
     ul.appendChild(li)
+}
+
+    
 }catch(e){
     console.log(e)
 }
@@ -119,6 +135,8 @@ dl.addEventListener('click',async (e)=>{
 if(e.target.classList.contains('edit')){
     let elem = e.target.parentNode.parentNode
     let ul = document.getElementById('users')
+    let li = e.target.parentElement.parentElement
+    curr = li.nextElementSibling
     let str = elem.textContent
     console.log(str)
     console.log(elem)
@@ -127,7 +145,10 @@ if(e.target.classList.contains('edit')){
     document.getElementById('phone').value = str.substring(str.indexOf('phone number')+15,str.lastIndexOf('edit'))
     console.log(e.target.id)
     document.querySelector('input[type="submit"]').id = e.target.id
-    ul.removeChild(e.target.parentNode.parentNode)
+
+    ul.removeChild(li)
+    // li.style.display = ""
+
     
     
 }
