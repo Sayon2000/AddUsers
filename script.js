@@ -1,5 +1,5 @@
 const axiosInstance = axios.create({
-    baseURL : 'https://crudcrud.com/api/49ab1f123b2e4d8888959f02d0cfc4c4/appointment'
+    baseURL : 'http://localhost:4000/user'
 })
 var curr = null;
 let form = document.getElementById('my-form')
@@ -31,7 +31,7 @@ async function handleSubmit(e){
 
     
     res = await axiosInstance.post('/',data)
-    id = res.data._id
+    id = res.data.id
     }
     let elem = document.querySelector('input[type="submit"]').dataset.elem
     console.log(res)
@@ -77,9 +77,7 @@ else{
     console.log(e)
 }
 }
-{/* <div class="float-right">
-            <button type="button" class="btn btn-primary btn-sm mx-2">edit</button><button class="btn btn-danger btn-sm delete">X</button>
-          </div> */}
+
 async function renderElements(){
     try{
 
@@ -88,7 +86,7 @@ async function renderElements(){
     console.log(users) 
     let ul = document.getElementById('users')
     ul.innerHTML = ``
-    users.data.forEach( (user ,index) => {
+    users.data.data.forEach( (user ,index) => {
         let li = document.createElement('li')
         li.className='item'
         let span = document.createElement('span')
@@ -100,12 +98,12 @@ async function renderElements(){
         let edit = document.createElement('button')
         edit.className = 'edit'
         edit.textContent = "edit"
-        edit.id = user._id
+        edit.id = user.id
         div.appendChild(edit)
         let deleteBtn = document.createElement('button')
         deleteBtn.className = 'delete'
         deleteBtn.textContent ='delete'
-        deleteBtn.id = user._id
+        deleteBtn.id = user.id
         div.appendChild(deleteBtn)
         li.appendChild(div)
         ul.appendChild(li)
